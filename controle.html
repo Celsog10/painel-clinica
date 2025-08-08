@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Controle de Chamadas</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #062C45;
+        color: white;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+    }
+    input, select, button {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+    }
+    button {
+        background-color: #0DA5E0;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0BC1FF;
+    }
+</style>
+</head>
+<body>
+
+<h1>Controle de Chamadas</h1>
+
+<input type="text" id="nomePaciente" placeholder="Nome do paciente">
+<select id="localDestino">
+    <option value="Recepção">Recepção</option>
+    <option value="Sala de Coleta">Sala de Coleta</option>
+    <option value="Consultório">Consultório</option>
+</select>
+<button onclick="chamarPaciente()">Chamar</button>
+
+<audio id="bip">
+    <source src="https://www.soundjay.com/button/beep-07.wav" type="audio/wav">
+</audio>
+
+<script>
+function chamarPaciente() {
+    let nome = document.getElementById("nomePaciente").value.trim();
+    let local = document.getElementById("localDestino").value;
+    if (nome === "") {
+        alert("Digite o nome do paciente!");
+        return;
+    }
+
+    const chamada = { nome, local };
+    localStorage.setItem("ultimaChamada", JSON.stringify(chamada));
+
+    // Adiciona ao histórico (máximo 3 últimos)
+    let historico = JSON.parse(localStorage.getItem("historicoChamadas")) || [];
+    historico.unshift(chamada);
+    if (historico.length > 3) historico.pop();
+    localStorage.setItem("historicoChamadas", JSON.stringify(historico));
+
+    // Toca bip
+    document.getElementById("bip").play();
+
+    // Limpa campo
+    document.getElementById("nomePaciente").value = "";
+}
+</script>
+
+</body>
+</html>

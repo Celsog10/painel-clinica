@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel da Clínica</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #0B3D5C;
+        color: white;
+        display: flex;
+        height: 100vh;
+    }
+    /* Área do vídeo */
+    .video-area {
+        flex: 2;
+        background-color: black;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    /* Área de informações */
+    .info-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        box-sizing: border-box;
+        background-color: #0B3D5C;
+    }
+    .logo {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .logo img {
+        max-width: 80%;
+    }
+    .relogio {
+        text-align: center;
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+    .chamada-atual {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #105E8B;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+        padding: 20px;
+    }
+    .chamada-atual h2 {
+        font-size: 2em;
+        margin: 0;
+        animation: piscar 1s infinite alternate;
+    }
+    .chamada-atual p {
+        font-size: 1.5em;
+        margin: 5px 0 0 0;
+    }
+    @keyframes piscar {
+        0% { color: yellow; }
+        100% { color: white; }
+    }
+    .historico {
+        background-color: #084C73;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .historico h3 {
+        margin-top: 0;
+    }
+</style>
+</head>
+<body>
+
+<div class="video-area">
+    <!-- Link do vídeo do YouTube (mutado para autoplay funcionar) -->
+    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&playlist=dQw4w9WgXcQ" allowfullscreen></iframe>
+</div>
+
+<div class="info-area">
+    <div class="logo">
+        <img src="logo.png" alt="Logo da Clínica">
+    </div>
+    <div class="relogio" id="relogio"></div>
+    <div class="chamada-atual" id="chamadaAtual">
+        <h2>Aguardando chamada...</h2>
+        <p></p>
+    </div>
+    <div class="historico">
+        <h3>Últimas Chamadas</h3>
+        <ul id="listaHistorico"></ul>
+    </div>
+</div>
+
+<script>
+// Relógio
+function atualizarRelogio() {
+    const agora = new Date();
+    document.getElementById("relogio").textContent = agora.toLocaleTimeString();
+}
+setInterval(atualizarRelogio, 1000);
+atualizarRelogio();
+
+// Atualização automática com localStorage
+function atualizarPainel() {
+    const chamada = JSON.parse(localStorage.getItem("ultimaChamada"));
+    const historico = JSON.parse(localStorage.getItem("historicoChamadas")) || [];
+
+    if (chamada) {
+        document.getElementById("chamadaAtual").innerHTML = `<h2>${chamada.nome}</h2><p>${chamada.local}</p>`;
+    }
+
+    const lista = document.getElementById("listaHistorico");
+    lista.innerHTML = "";
+    historico.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.nome} - ${item.local}`;
+        lista.appendChild(li);
+    });
+}
+
+// Checar atualizações a cada segundo
+setInterval(atualizarPainel, 1000);
+atualizarPainel();
+</script>
+
+</body>
+</html>
